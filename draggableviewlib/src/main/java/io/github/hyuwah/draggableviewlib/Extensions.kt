@@ -2,11 +2,9 @@
 
 package io.github.hyuwah.draggableviewlib
 
-import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.graphics.PixelFormat
 import android.os.Build
-import android.util.Log
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
@@ -108,7 +106,11 @@ internal fun View.setupDraggable(
                 viewState.isMoving = false
                 when (stickyAxis) {
                     DraggableView.Mode.STICKY_X -> {
-                        if (event.rawX >= xMiddle) {
+                        var newX = event.rawX + widgetDX
+                        newX = max(marginStart, newX)
+                        newX = min(xMax, newX)
+                        newX += v.width / 2
+                        if (newX >= xMiddle) {
                             if (animated) {
                                 v.animate().x(xMax)
                                     .setDuration(DURATION_MILLIS)
@@ -117,10 +119,7 @@ internal fun View.setupDraggable(
                                     }
                                     .setListener(
                                         object : AnimatorListenerAdapter() {
-                                            override fun onAnimationEnd(animation: Animator) {
-                                                super.onAnimationEnd(animation)
-                                                Log.d("drg", "Animate END Sticky X RIGHT")
-                                            }
+                                            // No-op
                                         },
                                     )
                                     .start()
@@ -141,7 +140,12 @@ internal fun View.setupDraggable(
                     }
 
                     DraggableView.Mode.STICKY_Y -> {
-                        if (event.rawY >= yMiddle) {
+                        var newY = event.rawY + widgetDY
+                        newY = max(marginTop, newY)
+                        newY = min(yMax, newY)
+                        newY += v.height / 2
+
+                        if (newY >= yMiddle) {
                             if (animated) {
                                 v.animate().y(yMax)
                                     .setDuration(DURATION_MILLIS)
@@ -167,7 +171,11 @@ internal fun View.setupDraggable(
                     }
 
                     DraggableView.Mode.STICKY_XY -> {
-                        if (event.rawX >= xMiddle) {
+                        var newX = event.rawX + widgetDX
+                        newX = max(marginStart, newX)
+                        newX = min(xMax, newX)
+                        newX += v.width / 2
+                        if (newX >= xMiddle) {
                             if (animated) {
                                 v.animate().x(xMax)
                                     .setDuration(DURATION_MILLIS)
@@ -189,7 +197,11 @@ internal fun View.setupDraggable(
                             v.x = marginStart
                         }
 
-                        if (event.rawY >= yMiddle) {
+                        var newY = event.rawY + widgetDY
+                        newY = max(marginTop, newY)
+                        newY = min(yMax, newY)
+                        newY += v.height / 2
+                        if (newY >= yMiddle) {
                             if (animated) {
                                 v.animate().y(yMax)
                                     .setDuration(DURATION_MILLIS)
