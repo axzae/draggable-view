@@ -7,11 +7,14 @@ import android.animation.AnimatorListenerAdapter
 import android.graphics.PixelFormat
 import android.os.Build
 import android.util.Log
-import android.view.*
+import android.view.GestureDetector
+import android.view.MotionEvent
+import android.view.View
+import android.view.ViewGroup
+import android.view.WindowManager
 import androidx.core.view.GestureDetectorCompat
 import io.github.hyuwah.draggableviewlib.Draggable.DRAG_TOLERANCE
 import io.github.hyuwah.draggableviewlib.Draggable.DURATION_MILLIS
-//import io.github.hyuwah.draggableviewlib.DraggableView.StickyRestSide
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
@@ -35,7 +38,6 @@ internal fun View.marginBottom(): Float {
 
 @JvmOverloads
 internal fun View.setupDraggable(
-//    minimizeBtnListener: DraggableView.Listener,
     stickyAxis: DraggableView.Mode = DraggableView.Mode.NON_STICKY,
     animated: Boolean = true,
     draggableListener: DraggableListener? = null,
@@ -52,16 +54,19 @@ internal fun View.setupDraggable(
 
     val viewState = DraggableViewState(
         isMoving = false,
-        isLongPressRegistered = false
+        isLongPressRegistered = false,
     )
     val gestureDetector =
-        GestureDetectorCompat(this.context, object : GestureDetector.SimpleOnGestureListener() {
-            override fun onLongPress(e: MotionEvent) {
-                if (viewState.isMoving) return
-                viewState.isLongPressRegistered = true
-                draggableListener?.onLongPress(this@setupDraggable)
-            }
-        })
+        GestureDetectorCompat(
+            this.context,
+            object : GestureDetector.SimpleOnGestureListener() {
+                override fun onLongPress(e: MotionEvent) {
+                    if (viewState.isMoving) return
+                    viewState.isLongPressRegistered = true
+                    draggableListener?.onLongPress(this@setupDraggable)
+                }
+            },
+        )
 
     setOnTouchListener { v, event ->
         val viewParent = v.parent as View
@@ -82,6 +87,7 @@ internal fun View.setupDraggable(
                 widgetInitialX = v.x
                 widgetInitialY = v.y
             }
+
             MotionEvent.ACTION_MOVE -> {
                 var newX = event.rawX + widgetDX
                 newX = max(marginStart, newX)
@@ -96,111 +102,117 @@ internal fun View.setupDraggable(
                 v.y = newY
 
                 draggableListener?.onPositionChanged(v)
-//                minimizeBtnListener.onPositionChanged(v, StickyRestSide.HIDE)
             }
+
             MotionEvent.ACTION_UP -> {
                 viewState.isMoving = false
                 when (stickyAxis) {
                     DraggableView.Mode.STICKY_X -> {
                         if (event.rawX >= xMiddle) {
-                            if (animated)
+                            if (animated) {
                                 v.animate().x(xMax)
                                     .setDuration(DURATION_MILLIS)
                                     .setUpdateListener {
                                         draggableListener?.onPositionChanged(v)
-//                                        minimizeBtnListener.onPositionChanged(v, StickyRestSide.RIGHT)
                                     }
-                                    .setListener(object : AnimatorListenerAdapter() {
-                                        override fun onAnimationEnd(animation: Animator) {
-                                            super.onAnimationEnd(animation)
-                                            Log.d("drg", "Animate END Sticky X RIGHT")
-                                        }
-                                    })
+                                    .setListener(
+                                        object : AnimatorListenerAdapter() {
+                                            override fun onAnimationEnd(animation: Animator) {
+                                                super.onAnimationEnd(animation)
+                                                Log.d("drg", "Animate END Sticky X RIGHT")
+                                            }
+                                        },
+                                    )
                                     .start()
-                            else {
+                            } else {
                                 v.x = xMax
-//                                minimizeBtnListener.onPositionChanged(v, StickyRestSide.RIGHT)
                             }
                         } else {
-                            if (animated)
+                            if (animated) {
                                 v.animate().x(marginStart).setDuration(DURATION_MILLIS)
                                     .setUpdateListener {
                                         draggableListener?.onPositionChanged(v)
-//                                        minimizeBtnListener.onPositionChanged(v, StickyRestSide.LEFT)
                                     }
                                     .start()
-                            else {
+                            } else {
                                 v.x = marginStart
-//                                minimizeBtnListener.onPositionChanged(v, StickyRestSide.LEFT)
                             }
                         }
                     }
+
                     DraggableView.Mode.STICKY_Y -> {
                         if (event.rawY >= yMiddle) {
-                            if (animated)
+                            if (animated) {
                                 v.animate().y(yMax)
                                     .setDuration(DURATION_MILLIS)
                                     .setUpdateListener {
                                         draggableListener?.onPositionChanged(v)
-//                                        minimizeBtnListener.onPositionChanged(v, StickyRestSide.BOTTOM)
                                     }
                                     .start()
-                            else
+                            } else {
                                 v.y = yMax
+                            }
                         } else {
-                            if (animated)
+                            if (animated) {
                                 v.animate().y(marginTop)
                                     .setDuration(DURATION_MILLIS)
                                     .setUpdateListener {
                                         draggableListener?.onPositionChanged(v)
                                     }
                                     .start()
-                            else
+                            } else {
                                 v.y = marginTop
+                            }
                         }
                     }
+
                     DraggableView.Mode.STICKY_XY -> {
                         if (event.rawX >= xMiddle) {
-                            if (animated)
+                            if (animated) {
                                 v.animate().x(xMax)
                                     .setDuration(DURATION_MILLIS)
                                     .setUpdateListener {
                                         draggableListener?.onPositionChanged(v)
                                     }
                                     .start()
-                            else
+                            } else {
                                 v.x = xMax
+                            }
                         } else {
-                            if (animated)
+                            if (animated) {
                                 v.animate().x(marginStart).setDuration(DURATION_MILLIS)
                                     .setUpdateListener {
                                         draggableListener?.onPositionChanged(v)
                                     }
                                     .start()
+                            }
                             v.x = marginStart
                         }
 
                         if (event.rawY >= yMiddle) {
-                            if (animated)
+                            if (animated) {
                                 v.animate().y(yMax)
                                     .setDuration(DURATION_MILLIS)
                                     .setUpdateListener {
                                         draggableListener?.onPositionChanged(v)
                                     }
                                     .start()
-                            else
+                            } else {
                                 v.y = yMax
+                            }
                         } else {
-                            if (animated)
+                            if (animated) {
                                 v.animate().y(marginTop).setDuration(DURATION_MILLIS)
                                     .setUpdateListener {
                                         draggableListener?.onPositionChanged(v)
                                     }
                                     .start()
-                            else
+                            } else {
                                 v.y = marginTop
+                            }
                         }
                     }
+
                     else -> {
                     }
                 }
@@ -214,6 +226,7 @@ internal fun View.setupDraggable(
                     performClick()
                 }
             }
+
             else -> return@setOnTouchListener false
         }
         true
@@ -225,13 +238,13 @@ internal fun View.setupDraggable(
     ReplaceWith(
         "DraggableView.Builder(view).build()",
         "io.github.hyuwah.draggableviewlib.DraggableView",
-    )
+    ),
 )
 @JvmOverloads
 fun View.makeDraggable(
     stickyAxis: Draggable.STICKY = Draggable.STICKY.NONE,
     animated: Boolean = true,
-    draggableListener: DraggableListener? = null
+    draggableListener: DraggableListener? = null,
 ) {
     val axisMode = when (stickyAxis) {
         Draggable.STICKY.NONE -> DraggableView.Mode.NON_STICKY
@@ -266,7 +279,7 @@ fun <T : View> T.setupDraggable(): DraggableView.Builder<T> {
 @JvmOverloads
 fun View.makeOverlayDraggable(
     listener: OverlayDraggableListener,
-    layoutParams: WindowManager.LayoutParams? = null
+    layoutParams: WindowManager.LayoutParams? = null,
 ): WindowManager.LayoutParams {
     var widgetInitialX = 0
     var widgetDX = 0f
@@ -284,7 +297,7 @@ fun View.makeOverlayDraggable(
             WindowManager.LayoutParams.WRAP_CONTENT,
             layoutFlag,
             WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
-            PixelFormat.TRANSLUCENT
+            PixelFormat.TRANSLUCENT,
         )
 
     setOnTouchListener { _, event ->
@@ -296,6 +309,7 @@ fun View.makeOverlayDraggable(
                 widgetDY = widgetInitialY - event.rawY
                 return@setOnTouchListener true
             }
+
             MotionEvent.ACTION_MOVE -> {
                 val newX = event.rawX + widgetDX
                 val newY = event.rawY + widgetDY
@@ -304,12 +318,14 @@ fun View.makeOverlayDraggable(
                 listener.onParamsChanged(params)
                 return@setOnTouchListener true
             }
+
             MotionEvent.ACTION_UP -> {
                 if (abs(params.x - widgetInitialX) <= DRAG_TOLERANCE && abs(params.y - widgetInitialY) <= DRAG_TOLERANCE) {
                     performClick()
                 }
                 return@setOnTouchListener true
             }
+
             else -> return@setOnTouchListener false
         }
     }

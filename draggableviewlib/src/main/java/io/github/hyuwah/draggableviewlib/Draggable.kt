@@ -4,13 +4,13 @@ object Draggable {
 
     @Deprecated(
         "Use DraggableView.Mode",
-        ReplaceWith("DraggableView.Mode", "io.github.hyuwah.draggableviewlib.DraggableView.Mode")
+        ReplaceWith("DraggableView.Mode", "io.github.hyuwah.draggableviewlib.DraggableView.Mode"),
     )
     enum class STICKY {
         NONE,
         AXIS_X,
         AXIS_Y,
-        AXIS_XY
+        AXIS_XY,
     }
 
     const val DRAG_TOLERANCE = 16

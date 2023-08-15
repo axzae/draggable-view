@@ -87,83 +87,91 @@ class DraggableImageView(context: Context, attrs: AttributeSet) :
                     when (stickyAxis) {
                         STICKY_AXIS_X -> {
                             if (event.rawX >= xMiddle) {
-                                if (mAnimate)
+                                if (mAnimate) {
                                     v.animate().x(xMax.toFloat())
                                         .setDuration(Draggable.DURATION_MILLIS)
                                         .setUpdateListener { draggableListener?.onPositionChanged(v) }
                                         .start()
-                                else
+                                } else {
                                     v.x = xMax.toFloat()
+                                }
                             } else {
-                                if (mAnimate)
+                                if (mAnimate) {
                                     v.animate().x(0F).setDuration(Draggable.DURATION_MILLIS)
                                         .setUpdateListener { draggableListener?.onPositionChanged(v) }
                                         .start()
-                                else
+                                } else {
                                     v.x = 0F
+                                }
                             }
                         }
                         STICKY_AXIS_Y -> {
                             if (event.rawY >= yMiddle) {
-                                if (mAnimate)
+                                if (mAnimate) {
                                     v.animate().y(yMax.toFloat())
                                         .setDuration(Draggable.DURATION_MILLIS)
                                         .setUpdateListener { draggableListener?.onPositionChanged(v) }
                                         .start()
-                                else
+                                } else {
                                     v.y = yMax.toFloat()
+                                }
                             } else {
-                                if (mAnimate)
+                                if (mAnimate) {
                                     v.animate().y(0F)
                                         .setDuration(Draggable.DURATION_MILLIS)
                                         .setUpdateListener { draggableListener?.onPositionChanged(v) }
                                         .start()
-                                else {
-                                    if (mAnimate)
+                                } else {
+                                    if (mAnimate) {
                                         v.animate().y(0F).setDuration(Draggable.DURATION_MILLIS)
                                             .setUpdateListener {
                                                 draggableListener?.onPositionChanged(
-                                                    v
+                                                    v,
                                                 )
                                             }
                                             .start()
-                                    else
+                                    } else {
                                         v.y = 0F
+                                    }
                                 }
                             }
                         }
                         STICKY_AXIS_XY -> {
                             if (event.rawX >= xMiddle) {
-                                if (mAnimate)
+                                if (mAnimate) {
                                     v.animate().x(xMax.toFloat())
                                         .setDuration(Draggable.DURATION_MILLIS)
                                         .setUpdateListener { draggableListener?.onPositionChanged(v) }
                                         .start()
-                                else
+                                } else {
                                     v.x = xMax.toFloat()
+                                }
                             } else {
-                                if (mAnimate)
+                                if (mAnimate) {
                                     v.animate().x(0F).setDuration(Draggable.DURATION_MILLIS)
                                         .setUpdateListener { draggableListener?.onPositionChanged(v) }
                                         .start()
+                                }
                                 v.x = 0F
                             }
 
                             if (event.rawY >= yMiddle) {
-                                if (mAnimate)
+                                if (mAnimate) {
                                     v.animate().y(yMax.toFloat())
                                         .setDuration(Draggable.DURATION_MILLIS)
                                         .setUpdateListener { draggableListener?.onPositionChanged(v) }
                                         .start()
-                                else
+                                } else {
                                     v.y = yMax.toFloat()
+                                }
                             } else {
-                                if (mAnimate)
+                                if (mAnimate) {
                                     v.animate().y(0F).setDuration(Draggable.DURATION_MILLIS)
                                         .setUpdateListener { draggableListener?.onPositionChanged(v) }
                                         .start()
-                                else
+                                } else {
                                     v.y = 0F
+                                }
                             }
                         }
                     }

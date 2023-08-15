@@ -2,18 +2,18 @@ package io.github.hyuwah.draggableviewlib
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
+import android.annotation.SuppressLint
 import android.view.View
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
 
 class DraggableView<T : View> private constructor(
-    targetView: T,
+    private var targetView: T,
     sticky: Mode,
     animated: Boolean,
-    listener: DraggableListener?
+    listener: DraggableListener?,
 ) {
 
-    private var targetView: T = targetView
     var sticky: Mode = Mode.NON_STICKY
         set(value) {
             field = value
@@ -49,6 +49,7 @@ class DraggableView<T : View> private constructor(
     /**
      *
      */
+    @SuppressLint("ClickableViewAccessibility")
     fun disableDrag() {
         targetView.setOnTouchListener(null)
     }
@@ -86,12 +87,14 @@ class DraggableView<T : View> private constructor(
                     animate().scaleY(0f).scaleX(0f)
                         .setInterpolator(AccelerateInterpolator())
                         .setDuration(durationMs.toLong())
-                        .setListener(object : AnimatorListenerAdapter() {
-                            override fun onAnimationEnd(animation: Animator) {
-                                super.onAnimationEnd(animation)
-                                visibility = View.GONE
-                            }
-                        })
+                        .setListener(
+                            object : AnimatorListenerAdapter() {
+                                override fun onAnimationEnd(animation: Animator) {
+                                    super.onAnimationEnd(animation)
+                                    visibility = View.GONE
+                                }
+                            },
+                        )
                         .start()
                 }
             }
@@ -110,17 +113,20 @@ class DraggableView<T : View> private constructor(
                     when {
                         x < marginStart() -> {
                             animate().translationX(0f).start()
-//                            minimizeButton?.animate()?.rotationBy(180f)
                         }
-                        x > parentWidth - width - marginEnd() ->
+
+                        x > parentWidth - width - marginEnd() -> {
                             animate().translationXBy(-(width / 2f) - marginEnd()).start()
+                        }
                     }
                     enableDrag()
                     isMinimized = false
                 }
+
                 Mode.STICKY_Y -> {
                     // TODO
                 }
+
                 else -> return
             }
         }
@@ -139,8 +145,8 @@ class DraggableView<T : View> private constructor(
                         marginStart() -> {
                             val targetDockedX = -((width.toFloat()) / 2 + marginStart())
                             animate().translationXBy(targetDockedX).start()
-//                            minimizeButton?.animate()?.rotationBy(-180f)
                         }
+
                         parentWidth - width - marginEnd() -> {
                             val targetDockedX = ((width.toFloat() / 2) + marginEnd())
                             animate().translationXBy(targetDockedX).start()
@@ -149,9 +155,11 @@ class DraggableView<T : View> private constructor(
                     disableDrag()
                     isMinimized = true
                 }
+
                 Mode.STICKY_Y -> {
                     // TODO
                 }
+
                 else -> return
             }
         }
@@ -182,6 +190,7 @@ class DraggableView<T : View> private constructor(
                 }
             }
         }
+
         fun build() = DraggableView(targetView, stickyMode, animated, listener)
     }
 
@@ -189,10 +198,6 @@ class DraggableView<T : View> private constructor(
         NON_STICKY,
         STICKY_X,
         STICKY_Y,
-        STICKY_XY
+        STICKY_XY,
     }
-
-//    internal enum class StickyRestSide {
-//        INITIAL, HIDE, LEFT, TOP, RIGHT, BOTTOM,
-//    }
 }
