@@ -39,3 +39,22 @@ dependencies {
     androidTestImplementation("androidx.test.ext:junit:1.1.2")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.3.0")
 }
+
+apply(from = "$projectDir/publish.gradle.kts")
+
+tasks {
+    val sourcesJar by creating(Jar::class) {
+        archiveClassifier.set("sources")
+        from(android.sourceSets.getByName("main").java.srcDirs)
+    }
+
+    artifacts {
+        archives(sourcesJar)
+    }
+}
+
+project.afterEvaluate {
+    project.tasks["publishMavenJavaPublicationToMavenLocal"].dependsOn("bundleReleaseAar")
+    project.tasks["publishMavenJavaPublicationToMavenRepository"].dependsOn("bundleReleaseAar")
+    project.tasks["signMavenJavaPublication"].dependsOn("bundleReleaseAar")
+}
