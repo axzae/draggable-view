@@ -218,3 +218,4 @@ fabric.properties
 .idea/dbnavigator.xml
 /.idea/deploymentTargetDropDown.xml
 /.idea/kotlinc.xml
+.idea/sonarlint
