@@ -27,6 +27,50 @@ dependencies {
 }
 ```
 
+## Usage
+
+In `layout.xml`:
+```xml
+<LinearLayout
+    android:id="@+id/layout_jail"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="48dp"
+    android:background="#40003300"
+    android:orientation="vertical">
+
+    <LinearLayout
+      android:id="@+id/layout_text"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:background="#a0f3409a"
+      android:orientation="vertical"
+      android:padding="8dp">
+
+      <TextView
+        android:id="@+id/text_x"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/text_x" />
+
+      <TextView
+        android:id="@+id/text_y"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/text_y" />
+    </LinearLayout>
+  </LinearLayout>
+````
+
+In `fragment.kt`:
+```kotlin
+override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    DraggableView.Builder(binding.layoutText)
+        .setStickyMode(DraggableView.Mode.STICKY_XY)
+        .build()
+}
+```
+
 
 ## See Also
 
