@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-        package="io.github.hyuwah.draggableview">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <!-- These permission is only used by overlay draggable view -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.ACTION_MANAGE_OVERLAY_PERMISSION" />
