@@ -7,6 +7,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import org.jetbrains.annotations.NotNull;
@@ -14,9 +15,10 @@ import org.jetbrains.annotations.NotNull;
 import io.github.hyuwah.draggableviewlib.DraggableListener;
 import io.github.hyuwah.draggableviewlib.DraggableView;
 
-import static io.github.hyuwah.draggableview.utils.ExtensionsKt.toast;
-
 public class JavaMainActivity extends AppCompatActivity implements DraggableListener {
+
+    @Nullable
+    private Toast toast = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,15 +29,15 @@ public class JavaMainActivity extends AppCompatActivity implements DraggableList
         Button button = findViewById(R.id.btn_java);
 
         DraggableView<Button> buttonDraggable = new DraggableView.Builder<>(button)
-                .setStickyMode(DraggableView.Mode.NON_STICKY) // default NON_STICKY
-                .setAnimated(true) // default true
-                .setListener(this) // default null
-                .build();
+            .setStickyMode(DraggableView.Mode.NON_STICKY) // default NON_STICKY
+            .setAnimated(true) // default true
+            .setListener(this) // default null
+            .build();
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                toast(JavaMainActivity.this, "Button Clicked");
+                showToast("Button Clicked");
             }
         });
 
@@ -49,6 +51,12 @@ public class JavaMainActivity extends AppCompatActivity implements DraggableList
 
     @Override
     public void onLongPress(@NonNull View view) {
-        toast(this,"Long press view : " + view.getId());
+        showToast("Long press view : " + view.getId());
+    }
+
+    private void showToast(String message) {
+        if (toast != null) toast.cancel();
+        toast = Toast.makeText(this, message, Toast.LENGTH_SHORT);
+        toast.show();
     }
 }

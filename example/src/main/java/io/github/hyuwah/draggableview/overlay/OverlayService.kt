@@ -12,6 +12,7 @@ import android.os.IBinder
 import android.view.WindowManager
 import android.widget.TextView
 import android.widget.Toast
+import io.github.hyuwah.draggableview.R
 import io.github.hyuwah.draggableviewlib.OverlayDraggableListener
 import io.github.hyuwah.draggableviewlib.makeOverlayDraggable
 
@@ -59,7 +60,6 @@ class OverlayService : Service(), SensorEventListener, OverlayDraggableListener 
     }
 
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
-
     }
 
     override fun onSensorChanged(event: SensorEvent) {
@@ -78,15 +78,14 @@ class OverlayService : Service(), SensorEventListener, OverlayDraggableListener 
 
     private fun initOverlayView() {
         overlayView = TextView(this)
-        overlayView.text = "Overlay Text View"
+        overlayView.text = getString(R.string.overlay_text_view)
         overlayView.textSize = 32f
         overlayView.setTextColor(Color.rgb(255, 255, 0))
         overlayView.setShadowLayer(10f, 5f, 5f, Color.rgb(56, 56, 56))
         overlayView.setOnClickListener {
-            Toast.makeText(this, "Overlay view clicked", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.overlay_view_clicked), Toast.LENGTH_SHORT).show()
         }
 
         params = overlayView.makeOverlayDraggable(this)
-
     }
 }

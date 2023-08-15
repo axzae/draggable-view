@@ -3,13 +3,14 @@ package io.github.hyuwah.draggableview
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.view.MotionEvent
 import android.view.View
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.NestedScrollView
 import io.github.hyuwah.draggableview.databinding.ActivityScrollingBinding
-import io.github.hyuwah.draggableview.utils.toast
 import io.github.hyuwah.draggableview.utils.viewBinding
 import io.github.hyuwah.draggableviewlib.DraggableListener
 import io.github.hyuwah.draggableviewlib.DraggableView
@@ -22,14 +23,14 @@ class ScrollingActivity : AppCompatActivity() {
 
     private val debugPos = object : DraggableListener {
         override fun onPositionChanged(view: View) {
-            binding.tvDebug.text = """
-                X: ${view.x}
-                Y: ${view.y}
-            """.trimIndent()
+            binding.tvDebug.text = listOf(
+                "X: ${view.x}",
+                "Y: ${view.y}",
+            ).joinToString { "\n" }
         }
 
         override fun onLongPress(view: View) {
-            toast("Long press view : ${view.id}")
+            showToast("Long press view : ${view.id}")
         }
     }
 
@@ -57,16 +58,15 @@ class ScrollingActivity : AppCompatActivity() {
         // example of hide/showing the view based on scrolling activity
         binding.scrollView.scrollState(
             onIdle = {
-                binding.tvScroll.text = "Idle/Show"
+                binding.tvScroll.text = getString(R.string.idle_show)
                 dvImageDraggable.show()
             },
             onScrolled = {
-                binding.tvScroll.text = "Scrolling/Hide"
+                binding.tvScroll.text = getString(R.string.scrolling_hide)
                 dvImageDraggable.hide()
-            }
+            },
         )
     }
-
 
     /**
      * Helper function to detect scroll / idle state of scrollview
@@ -74,18 +74,20 @@ class ScrollingActivity : AppCompatActivity() {
     @SuppressLint("ClickableViewAccessibility")
     inline fun NestedScrollView.scrollState(
         crossinline onIdle: () -> Unit,
-        crossinline onScrolled: () -> Unit
+        crossinline onScrolled: () -> Unit,
     ) {
-        val handler = Handler()
+        val handler = Handler(Looper.getMainLooper())
         var isScrolled = false
         setOnTouchListener { _, event ->
             when (event.action) {
                 MotionEvent.ACTION_SCROLL,
-                MotionEvent.ACTION_DOWN -> {
+                MotionEvent.ACTION_DOWN,
+                -> {
                     handler.removeCallbacksAndMessages(null)
                     onScrolled()
                     isScrolled = true
                 }
+
                 MotionEvent.ACTION_MOVE -> {
                     handler.removeCallbacksAndMessages(null)
                     if (!isScrolled) {
@@ -93,13 +95,21 @@ class ScrollingActivity : AppCompatActivity() {
                         isScrolled = true
                     }
                 }
+
                 MotionEvent.ACTION_CANCEL,
-                MotionEvent.ACTION_UP -> {
+                MotionEvent.ACTION_UP,
+                -> {
                     handler.postDelayed({ onIdle() }, 500)
                     isScrolled = false
                 }
             }
             false
         }
+    }
+
+    private var toast: Toast? = null
+    private fun showToast(message: String) {
+        toast?.cancel()
+        toast = Toast.makeText(this, message, Toast.LENGTH_SHORT).apply { show() }
     }
 }

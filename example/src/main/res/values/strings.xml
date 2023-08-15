@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">DraggableView</string>
+    <string name="idle_show">Idle/Show</string>
+    <string name="scrolling_hide">Scrolling/Hide</string>
+    <string name="overlay_text_view">Overlay Text View</string>
+    <string name="overlay_view_clicked">Overlay view clicked</string>
+    <string name="text_x">TEXT X</string>
+    <string name="text_y">TEXT Y</string>
+    <string name="drag_me">DRAG ME!</string>
 </resources>

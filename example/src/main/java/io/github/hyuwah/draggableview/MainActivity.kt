@@ -8,27 +8,26 @@ import io.github.hyuwah.draggableview.utils.viewBinding
 
 class MainActivity : AppCompatActivity() {
 
-    private val vb by viewBinding(ActivityMainBinding::inflate)
+    private val binding by viewBinding(ActivityMainBinding::inflate)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(vb.root)
+        setContentView(binding.root)
 
-        vb.btnBasicActivity.setOnClickListener {
+        binding.btnBasicActivity.setOnClickListener {
             launch<BasicExampleActivity>()
         }
 
-        vb.btnJavaActivity.setOnClickListener {
+        binding.btnJavaActivity.setOnClickListener {
             launch<JavaMainActivity>()
         }
 
-        vb.btnOverlayActivity.setOnClickListener {
+        binding.btnOverlayActivity.setOnClickListener {
             launch<OverlayDraggableActivity>()
         }
 
-        vb.btnScrollingActivity.setOnClickListener {
+        binding.btnScrollingActivity.setOnClickListener {
             launch<ScrollingActivity>()
         }
-
     }
 }

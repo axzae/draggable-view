@@ -1,16 +1,15 @@
 package io.github.hyuwah.draggableview
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.doOnTextChanged
 import io.github.hyuwah.draggableview.databinding.ActivityBasicExampleBinding
-import io.github.hyuwah.draggableview.utils.toast
 import io.github.hyuwah.draggableview.utils.viewBinding
 import io.github.hyuwah.draggableviewlib.DraggableListener
 import io.github.hyuwah.draggableviewlib.DraggableView
@@ -20,20 +19,20 @@ class BasicExampleActivity : AppCompatActivity() {
 
     private val binding by viewBinding(ActivityBasicExampleBinding::inflate)
 
-    private lateinit var llTestDraggable: DraggableView<LinearLayout>
-    private lateinit var tvTestDraggable: DraggableView<TextView>
-    private lateinit var ivTestDraggable: DraggableView<ImageView>
+    private lateinit var layoutTestDraggable: DraggableView<LinearLayout>
+    private lateinit var textTestDraggable: DraggableView<TextView>
+    private lateinit var imageTestDraggable: DraggableView<ImageView>
 
-    private var llDragListener = object : DraggableListener {
+    private var layoutDragListener = object : DraggableListener {
         override fun onPositionChanged(view: View) {
             with(binding) {
-                tvLl1.text = "X: ${view.x.toString().take(6)}"
-                tvLl2.text = "Y: ${view.y.toString().take(6)}"
+                textX.text = "X: ${view.x.toString().take(6)}"
+                textY.text = "Y: ${view.y.toString().take(6)}"
             }
         }
 
         override fun onLongPress(view: View) {
-            toast("Long press view : ${view.id}")
+            showToast("Long press view : ${view.id}")
         }
     }
 
@@ -47,89 +46,93 @@ class BasicExampleActivity : AppCompatActivity() {
 
     private fun setupDraggableView() {
         // Using extension function
-        tvTestDraggable = binding.tvTest.setupDraggable().build()
+        textTestDraggable = binding.textDragMe.setupDraggable().build()
         // Using DraggableView Builder
-        llTestDraggable = DraggableView.Builder(binding.llTest)
+        layoutTestDraggable = DraggableView.Builder(binding.layoutText)
             .setStickyMode(DraggableView.Mode.NON_STICKY)
-            .setListener(llDragListener)
+            .setListener(layoutDragListener)
             .build()
         // Using extension function
-        ivTestDraggable = binding.ivTest.setupDraggable()
+        imageTestDraggable = binding.imageTest.setupDraggable()
             .setAnimated(true)
             .setStickyMode(DraggableView.Mode.NON_STICKY)
             .build()
     }
 
     private fun setupDraggableViewOnClick() {
-        binding.ivTest.setOnClickListener {
-            toast("This is 0")
+        binding.imageTest.setOnClickListener {
+            showToast("This is 0")
         }
 
-        binding.llTest.setOnClickListener {
-            toast("This is 1")
+        binding.layoutText.setOnClickListener {
+            showToast("This is 1")
         }
 
-        binding.tvTest.setOnClickListener {
-            toast("This is 2")
+        binding.textDragMe.setOnClickListener {
+            showToast("This is 2")
         }
     }
 
     private fun setupControl() {
         with(binding.layoutControl) {
-
             // Set Sticky Mode
             etStickyMode.setText(DraggableView.Mode.NON_STICKY.name)
             val stickyModeAdapter = ArrayAdapter(
                 this@BasicExampleActivity,
                 android.R.layout.simple_spinner_dropdown_item,
-                DraggableView.Mode.values().map { it.name }
+                DraggableView.Mode.values().map { it.name },
             )
             etStickyMode.setAdapter(stickyModeAdapter)
             etStickyMode.doOnTextChanged { text, _, _, _ ->
                 val selectedMode = DraggableView.Mode.values().find { it.name == text.toString() }
-                toast(selectedMode?.name ?: "Null")
+                showToast(selectedMode?.name ?: "Null")
 
                 selectedMode?.let {
-                    llTestDraggable.sticky = it
-                    tvTestDraggable.sticky = it
-                    ivTestDraggable.sticky = it
+                    layoutTestDraggable.sticky = it
+                    textTestDraggable.sticky = it
+                    imageTestDraggable.sticky = it
                 }
             }
 
             // Set animation
             swAnimate.isChecked = true
             swAnimate.setOnCheckedChangeListener { _, isChecked ->
-                llTestDraggable.animated = isChecked
-                tvTestDraggable.animated = isChecked
-                ivTestDraggable.animated = isChecked
+                layoutTestDraggable.animated = isChecked
+                textTestDraggable.animated = isChecked
+                imageTestDraggable.animated = isChecked
             }
 
             // Set drag enabled / disabled
             swDisableDraggable.setOnCheckedChangeListener { _, isChecked ->
                 if (isChecked) {
-                    llTestDraggable.disableDrag()
-                    tvTestDraggable.disableDrag()
-                    ivTestDraggable.disableDrag()
+                    layoutTestDraggable.disableDrag()
+                    textTestDraggable.disableDrag()
+                    imageTestDraggable.disableDrag()
                 } else {
-                    llTestDraggable.enableDrag()
-                    tvTestDraggable.enableDrag()
-                    ivTestDraggable.enableDrag()
+                    layoutTestDraggable.enableDrag()
+                    textTestDraggable.enableDrag()
+                    imageTestDraggable.enableDrag()
                 }
             }
 
             // Set show/hide draggable view
             swHideDraggable.setOnCheckedChangeListener { _, isChecked ->
                 if (isChecked) {
-                    tvTestDraggable.hide()
-                    llTestDraggable.hide()
-                    ivTestDraggable.hide()
+                    textTestDraggable.hide()
+                    layoutTestDraggable.hide()
+                    imageTestDraggable.hide()
                 } else {
-                    tvTestDraggable.show()
-                    llTestDraggable.show()
-                    ivTestDraggable.show()
+                    textTestDraggable.show()
+                    layoutTestDraggable.show()
+                    imageTestDraggable.show()
                 }
             }
         }
     }
 
+    private var toast: Toast? = null
+    private fun showToast(message: String) {
+        toast?.cancel()
+        toast = Toast.makeText(this, message, Toast.LENGTH_SHORT).apply { show() }
+    }
 }

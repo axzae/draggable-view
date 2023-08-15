@@ -32,21 +32,19 @@ class OverlayDraggableActivity : AppCompatActivity() {
             // Get permission first on Android M & above
             val intent = Intent(
                 Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                Uri.parse("package:$packageName")
+                Uri.parse("package:$packageName"),
             )
             startActivityForResult(intent, 1234)
         } else {
-            val i = Intent(this, OverlayService::class.java)
+            val intent = Intent(this, OverlayService::class.java)
             if (!isOverlayOn) {
                 // Show
-                startService(i)
+                startService(intent)
             } else {
                 // Hide
-                stopService(i)
+                stopService(intent)
             }
             isOverlayOn = !isOverlayOn
         }
     }
-
-
 }
