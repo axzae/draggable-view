@@ -1,5 +1,6 @@
 package io.github.hyuwah.draggableview
 
+import android.content.res.Resources
 import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
@@ -10,6 +11,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.doOnTextChanged
 import io.github.hyuwah.draggableview.databinding.ActivityBasicExampleBinding
+import io.github.hyuwah.draggableview.utils.px2dp
 import io.github.hyuwah.draggableview.utils.viewBinding
 import io.github.hyuwah.draggableviewlib.DraggableListener
 import io.github.hyuwah.draggableviewlib.DraggableView
@@ -26,8 +28,8 @@ class BasicExampleActivity : AppCompatActivity() {
     private var layoutDragListener = object : DraggableListener {
         override fun onPositionChanged(view: View) {
             with(binding) {
-                textX.text = "X: ${view.x.toString().take(6)}"
-                textY.text = "Y: ${view.y.toString().take(6)}"
+                textX.text = "X: ${view.x.px2dp}dp / ${(view.parent as View).width.px2dp}dp"
+                textY.text = "Y: ${view.y.px2dp}dp / ${(view.parent as View).height.px2dp}dp"
             }
         }
 
@@ -42,6 +44,9 @@ class BasicExampleActivity : AppCompatActivity() {
         setupControl()
         setupDraggableView()
         setupDraggableViewOnClick()
+
+        binding.textX.text = "Density: ${Resources.getSystem().displayMetrics.density}"
+        binding.textY.text = ""
     }
 
     private fun setupDraggableView() {

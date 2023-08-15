@@ -14,28 +14,37 @@
         app:layout_constraintBottom_toBottomOf="parent" />
 
     <LinearLayout
-        android:id="@+id/layout_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="8dp"
-        android:layout_margin="24dp"
-        android:background="#a0f3409a"
+        android:id="@+id/layout_jail"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="48dp"
+        android:background="#40003300"
         android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@id/layout_control"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/text_x"
+        <LinearLayout
+            android:id="@+id/layout_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/text_x" />
+            android:background="#a0f3409a"
+            android:orientation="vertical"
+            android:padding="8dp">
 
-        <TextView
-            android:id="@+id/text_y"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/text_y" />
+            <TextView
+                android:id="@+id/text_x"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/text_x" />
+
+            <TextView
+                android:id="@+id/text_y"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/text_y" />
+        </LinearLayout>
     </LinearLayout>
 
     <ImageView
